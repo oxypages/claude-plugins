@@ -1,0 +1,26 @@
+{
+  "name": "oxypages",
+  "owner": {
+    "name": "OxyPages",
+    "url": "https://oxypages.com"
+  },
+  "plugins": [
+    {
+      "name": "oxypages",
+      "source": "./oxypages",
+      "description": "Publish static sites to OxyPages: the OxyPages MCP server plus a /oxypages:publish skill with a no-account fallback.",
+      "version": "1.0.0",
+      "homepage": "https://oxypages.com",
+      "license": "MIT",
+      "keywords": [
+        "hosting",
+        "static-site",
+        "publish",
+        "deploy",
+        "html",
+        "mcp"
+      ]
+    }
+  ],
+  "description": "Official OxyPages plugins for Claude Code: publish static sites through the OxyPages MCP server and the /oxypages:publish skill."
+}

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "oxypages": {
+      "url": "https://mcp.oxypages.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${CLAUDE_PLUGIN_OPTION_API_KEY}"
+      }
+    }
+  }
+}
