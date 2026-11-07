@@ -21,10 +21,10 @@ free accounts include one. Leave it empty and the skill can still publish
 | | |
 |---|---|
 | MCP tools | `list_sites`, `create_site`, `deploy_site`, `list_deployments` on your account (`https://mcp.oxypages.com/mcp`) |
-| `/oxypages:publish` | the skill: consent rule, which tool to use, the no-account fallback, what to tell the user |
+| `/oxypages:publish` | the skill: consent rule, which tool to use, the no-account fallbacks (an HTML page, or a built React/Vue/Vite app's output folder), what to tell the user |
 
-Ask Claude to "publish this folder to OxyPages" or "put this page online"
-and the skill takes over. Every publish goes through OxyPages moderation; a
+Ask Claude to "publish this folder to OxyPages", "put this page online" or
+"build this app and deploy it to OxyPages" and the skill takes over. Every publish goes through OxyPages moderation; a
 refusal is relayed, not retried.
 
 ## Develop

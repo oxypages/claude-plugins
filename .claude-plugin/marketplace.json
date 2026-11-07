@@ -8,8 +8,8 @@
     {
       "name": "oxypages",
       "source": "./oxypages",
-      "description": "Publish static sites to OxyPages: the OxyPages MCP server plus a /oxypages:publish skill with a no-account fallback.",
-      "version": "1.0.0",
+      "description": "Publish websites and built apps to OxyPages with no setup: a 30-minute live link plus a claim link, or deploy into your account with an API key.",
+      "version": "1.1.0",
       "homepage": "https://oxypages.com",
       "license": "MIT",
       "keywords": [
@@ -22,5 +22,5 @@
       ]
     }
   ],
-  "description": "Official OxyPages plugins for Claude Code: publish static sites through the OxyPages MCP server and the /oxypages:publish skill."
+  "description": "Official OxyPages plugins for Claude Code: publish websites and built apps through the OxyPages MCP server and the /oxypages:publish skill."
 }
