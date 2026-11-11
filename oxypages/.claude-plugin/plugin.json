@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "oxypages",
   "displayName": "OxyPages",
-  "version": "1.1.0",
-  "description": "Publish websites and built apps (React, Vue, Vite, Astro) to OxyPages from Claude Code, with no account or setup: a live link plus a claim link. Add an API key to deploy into your account through the OxyPages MCP server.",
+  "version": "1.2.0",
+  "description": "Publish websites and built apps (React, Vue, Vite, Astro) to OxyPages from Claude Code, with no account or setup: a live link plus a claim link. Add an API key to deploy into your account and edit your existing sites, through the OxyPages MCP server or the REST API.",
   "author": {
     "name": "OxyPages",
     "url": "https://oxypages.com"

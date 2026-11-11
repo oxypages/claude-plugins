@@ -9,7 +9,7 @@
       "name": "oxypages",
       "source": "./oxypages",
       "description": "Publish websites and built apps to OxyPages with no setup: a 30-minute live link plus a claim link, or deploy into your account with an API key.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "homepage": "https://oxypages.com",
       "license": "MIT",
       "keywords": [

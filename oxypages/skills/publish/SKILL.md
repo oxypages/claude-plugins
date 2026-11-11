@@ -1,6 +1,6 @@
 ---
 name: publish
-description: Publish a static website (HTML, CSS, JS, images or a ZIP) or a built framework app (React, Vue, Svelte, Vite, Astro, Next.js static export) to OxyPages and give the user a live HTTPS link. Use when the user asks to host, publish, deploy, put online, or get a link for a page, site or app. Uses the bundled OxyPages MCP tools when an API key is configured, or a no-account 30-minute link otherwise.
+description: Publish a static website (HTML, CSS, JS, images or a ZIP) or a built framework app (React, Vue, Svelte, Vite, Astro, Next.js static export) to OxyPages and give the user a live HTTPS link, or edit a website already on OxyPages. Use when the user asks to host, publish, deploy, put online, get a link for a page, site or app, or change their OxyPages site. Uses the bundled OxyPages MCP tools when an API key is configured, or a no-account 30-minute link otherwise.
 ---
 
 # Publish to OxyPages
@@ -10,10 +10,12 @@ OxyPages hosts static sites on `*.myoxypages.com` with HTTPS, live in seconds. T
 - `list_sites` - the sites on the account: id, name, subdomain, live URL, status.
 - `create_site` - a new site with a generated subdomain. Optional `name`.
 - `deploy_site` - replace a site's files: `site_id` plus `files[]` of `{path, content, encoding}`. Text as `utf8` (default), binaries as `base64`. Must include `index.html` at the top level. Returns the live URL.
+- `read_site_files` - a site's LIVE files: text files with their `content`, images and other binaries as their public `url`. Optional `path` for one file.
+- `update_site_files` - change only some files: `site_id`, `files[]` of `{path, content}` (text files only) and optional `deletions[]`. Everything not sent, including images, is carried forward. A new version.
 - `list_deployments` - version history for a site.
 - `deploy_app` - a built app's output folder into a project with Single-Page App routing (listed on accounts with Web Apps turned on, which includes every account that has claimed an app).
 
-If those tools are missing, the key is not configured; use the no-account paths below.
+If those tools are missing but the user has an OxyPages API key (usually in `OXYPAGES_API_KEY`), use the REST API below. With neither, use the no-account paths.
 
 ## Consent rule
 
@@ -25,11 +27,28 @@ Publishing makes content public. Before you publish:
 
 ## With an API key: MCP tools
 
-1. Call `list_sites`. If a site clearly matches what the user is updating, deploy into it - a deploy replaces the whole site, which is what "update my site" means. Otherwise, or when they say "new site", call `create_site`.
+1. Call `list_sites`. To CHANGE a site the user already has ("make the header blue", "add a contact section"), call `read_site_files`, edit the text files, then `update_site_files` with only the changed files - never redeploy every file for a small edit. To replace a site with a new build from disk, deploy into it. For a new site, call `create_site`.
 2. Gather every file the site needs. Read them from disk; relative links only (`css/style.css`, never absolute machine paths). Hostable types: HTML, CSS, JS, JSON, text, images, fonts, PDF. Encode images and fonts as `base64`.
 3. Call `deploy_site` with the complete file list. Report the returned URL and version number. Report any `warnings` (skipped files).
 
 Sizes are the account's plan. Do not quote numbers from memory; if it matters, fetch `https://api.oxypages.com/limits` with WebFetch or curl.
+
+## With an API key but no MCP: the REST API
+
+Same account, same rules, with the key as a Bearer token. Read the key from the environment; never print it or write it into a file.
+
+```bash
+H="Authorization: Bearer $OXYPAGES_API_KEY"
+curl -sS https://api.oxypages.com/v1/sites -H "$H"                              # sites and their ids
+curl -sS https://api.oxypages.com/v1/sites/SITE_ID/files -H "$H"                # live files (?path=style.css for one)
+curl -sS -X POST https://api.oxypages.com/v1/sites/SITE_ID/files -H "$H" \
+  -H "Content-Type: application/json" \
+  -d '{"files":[{"path":"index.html","content":"<!doctype html>..."}],"deletions":[]}'   # only what changed
+curl -sS -X POST https://api.oxypages.com/v1/sites/SITE_ID/deployments -H "$H" -F "zip=@site.zip"   # whole site
+curl -sS -X POST https://api.oxypages.com/v1/sites -H "$H" -H "Content-Type: application/json" -d '{"name":"My Site"}'   # new site
+```
+
+`/files` takes text files only (HTML, CSS, JS, JSON, SVG, text); to replace an image, deploy the whole site. Build the JSON body with a tool that escapes it (for example `jq -n --rawfile c index.html '{files:[{path:"index.html",content:$c}]}'`), not by hand. Every call creates a new version; report the returned `url` and `deployment_number`. The full reference is `https://oxypages.com/llms.txt`.
 
 ## Without an API key: a 30-minute unclaimed link
 
@@ -90,6 +109,7 @@ Always give the claim link. Claiming turns the app into a project in their accou
 ## What the user gets back
 
 - Owned deploy: "Deployed to {url} (version {n})."
+- Edit of an existing site: what you changed, then "Live at {url} (version {n}). The previous version can be restored from Version History."
 - Unclaimed page: the URL, the 30-minute expiry, the claim link, and the API-key offer.
 - Unclaimed app: the URL, the 30-minute expiry and the claim link.
 - Refusal: the reason, verbatim, and no retry with cosmetic edits.
