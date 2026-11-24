@@ -15,7 +15,9 @@ OxyPages hosts static sites on `*.myoxypages.com` with HTTPS, live in seconds. T
 - `list_deployments` - version history for a site.
 - `deploy_app` - a built app's output folder into a project with Single-Page App routing (listed on accounts with Web Apps turned on, which includes every account that has claimed an app).
 
-If those tools are missing but the user has an OxyPages API key (usually in `OXYPAGES_API_KEY`), use the REST API below. With neither, use the no-account paths.
+The server also has tools for project settings, custom domains, builds and Git-linked projects; each tool's description says what it does and whether it needs `confirm: true`.
+
+If those tools are missing, no API key is configured: use the no-account paths below, and tell the user they can add a key from `/plugin` (OxyPages, API key) to publish into their account.
 
 ## Consent rule
 
@@ -32,23 +34,6 @@ Publishing makes content public. Before you publish:
 3. Call `deploy_site` with the complete file list. Report the returned URL and version number. Report any `warnings` (skipped files).
 
 Sizes are the account's plan. Do not quote numbers from memory; if it matters, fetch `https://api.oxypages.com/limits` with WebFetch or curl.
-
-## With an API key but no MCP: the REST API
-
-Same account, same rules, with the key as a Bearer token. Read the key from the environment; never print it or write it into a file.
-
-```bash
-H="Authorization: Bearer $OXYPAGES_API_KEY"
-curl -sS https://api.oxypages.com/v1/sites -H "$H"                              # sites and their ids
-curl -sS https://api.oxypages.com/v1/sites/SITE_ID/files -H "$H"                # live files (?path=style.css for one)
-curl -sS -X POST https://api.oxypages.com/v1/sites/SITE_ID/files -H "$H" \
-  -H "Content-Type: application/json" \
-  -d '{"files":[{"path":"index.html","content":"<!doctype html>..."}],"deletions":[]}'   # only what changed
-curl -sS -X POST https://api.oxypages.com/v1/sites/SITE_ID/deployments -H "$H" -F "zip=@site.zip"   # whole site
-curl -sS -X POST https://api.oxypages.com/v1/sites -H "$H" -H "Content-Type: application/json" -d '{"name":"My Site"}'   # new site
-```
-
-`/files` takes text files only (HTML, CSS, JS, JSON, SVG, text); to replace an image, deploy the whole site. Build the JSON body with a tool that escapes it (for example `jq -n --rawfile c index.html '{files:[{path:"index.html",content:$c}]}'`), not by hand. Every call creates a new version; report the returned `url` and `deployment_number`. The full reference is `https://oxypages.com/llms.txt`.
 
 ## Without an API key: a 30-minute unclaimed link
 
